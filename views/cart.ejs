@@ -1,0 +1,65 @@
+<%- include('partials/header') %>
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/marketplace">Marketplace</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="#">My Community</a></li>
+                <li class="nav-item"><a class="nav-link" href="/cart">My Cart</a></li>
+                <li class="nav-item"><a class="nav-link" href="/orders/history">Order History</a></li>
+            </ul>
+            <span class="navbar-text me-3">Welcome, <%= user.email %></span>
+            <a href="/profile" class="btn btn-outline-info me-2">Profile</a> 
+            <a href="/logout" class="btn btn-outline-danger">Logout</a>
+        </div>
+    </div>
+</nav>
+<%- include('partials/messages') %>
+
+<div class="container">
+    <h2>Your Shopping Cart</h2>
+    <%- include('partials/messages') %>
+
+    <% if(cart && cart.length > 0) { %>
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% cart.forEach(item => { %>
+                    <% if(item.product) { %>
+                    <tr>
+                        <td><%= item.product.name %></td>
+                        <td>₹<%= item.product.price.toFixed(2) %> / <%= item.product.unit %></td>
+                        <td><%= item.quantity %></td>
+                        <td>₹<%= (item.product.price * item.quantity).toFixed(2) %></td>
+                        <td>
+                            <form action="/cart/remove/<%= item.product._id %>" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <% } %>
+                <% }); %>
+            </tbody>
+        </table>
+        <hr>
+        <div class="text-end">
+            <h3>Total: ₹<%= totalPrice.toFixed(2) %></h3>
+            <form action="/orders/checkout" method="POST">
+                <button type="submit" class="btn btn-lg btn-primary">Proceed to Checkout</button>
+            </form>
+        </div>
+    <% } else { %>
+        <p class="text-center">Your cart is empty. <a href="/marketplace">Go find some produce!</a></p>
+    <% } %>
+</div>
+
+<%- include('partials/footer') %>

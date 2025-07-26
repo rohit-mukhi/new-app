@@ -1,0 +1,34 @@
+<%- include('partials/header') %>
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/marketplace">Marketplace</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="#">My Community</a></li>
+                <li class="nav-item"><a class="nav-link" href="/cart">My Cart</a></li>
+                <li class="nav-item"><a class="nav-link" href="/orders/history">Order History</a></li>
+            </ul>
+
+            <span class="navbar-text me-3">Welcome, <%= user.email %></span>
+            <a href="/profile" class="btn btn-outline-info me-2">Profile</a>
+            <a href="/logout" class="btn btn-outline-danger">Logout</a>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <h2>File a Complaint</h2>
+    <p><strong>Order ID:</strong> <%= order._id %></p>
+    <p>Please describe the issue you had with this order. Your complaint will be reviewed by our team.</p>
+
+    <form action="/grievances/file/<%= order._id %>" method="POST">
+        <div class="mb-3">
+            <label for="reason" class="form-label">Reason for Complaint</label>
+            <textarea class="form-control" id="reason" name="reason" rows="5" required placeholder="e.g., Poor quality produce, incorrect quantity, etc."></textarea>
+        </div>
+        <button type="submit" class="btn btn-danger">Submit Complaint</button>
+        <a href="/orders/history" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+<%- include('partials/footer') %>

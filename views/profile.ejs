@@ -1,0 +1,41 @@
+<%- include('partials/header') %>
+<nav class="navbar navbar-expand-lg bg-body-tertiary mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/dashboard">Dashboard</a>
+        <a href="/logout" class="btn btn-outline-danger">Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+    <h2>Your Profile</h2>
+    <%- include('partials/messages') %>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Account Details</h4>
+            <p><strong>Email:</strong> <%= user.email %></p>
+            <p><strong>Role:</strong> <%= user.role.charAt(0).toUpperCase() + user.role.slice(1) %></p>
+            <p><strong>Locality:</strong> <%= user.locality %></p>
+        </div>
+        <div class="col-md-6">
+            <h4>Change Password</h4>
+            <form action="/profile/change-password" method="POST">
+                <div class="mb-3">
+                    <label for="oldPassword" class="form-label">Old Password</label>
+                    <input type="password" name="oldPassword" id="oldPassword" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="newPassword" class="form-label">New Password</label>
+                    <input type="password" name="newPassword" id="newPassword" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                    <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Change Password</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

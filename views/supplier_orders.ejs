@@ -1,0 +1,55 @@
+<%- include('partials/header') %>
+<nav class="navbar navbar-expand-lg bg-body-tertiary mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/dashboard">Supplier Dashboard</a>
+        <div class="collapse navbar-collapse">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link" href="/products/new">List New Item</a></li>
+            <li class="nav-item"><a class="nav-link active" href="/orders/manage">Manage Orders</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Transaction History</a></li>
+          </ul>
+            <span class="navbar-text me-3">Welcome, <%= user.email %></span>
+      <a href="/profile" class="btn btn-outline-info me-2">Profile</a>
+      <a href="/logout" class="btn btn-outline-danger">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h2>Incoming Orders</h2>
+    <%- include('partials/messages') %>
+
+    <% if(orders && orders.length > 0) { %>
+        <% orders.forEach(order => { %>
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between">
+                    <span><strong>Order ID:</strong> <%= order._id %></span>
+                    <span><strong>Vendor:</strong> <%= order.vendor.email %> (<%= order.vendor.locality %>)</span>
+                </div>
+                <div class="card-body">
+                    <h6 class="card-title">Products for You in this Order:</h6>
+                    <ul class="list-group list-group-flush">
+                        <% order.products.filter(p => p.supplier.toString() === user._id.toString()).forEach(item => { %>
+                            <li class="list-group-item"><%= item.quantity %> x <%= item.product.name %></li>
+                        <% }); %>
+                    </ul>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <span><strong>Current Status:</strong> <span class="badge bg-info"><%= order.status %></span></span>
+                    <form action="/orders/update-status/<%= order._id %>" method="POST" class="d-flex gap-2">
+                        <select name="status" class="form-select form-select-sm" style="width: auto;">
+                            <option value="Pending" <%= order.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                            <option value="Confirmed" <%= order.status === 'Confirmed' ? 'selected' : '' %>>Confirm</option>
+                            <option value="Delivered" <%= order.status === 'Delivered' ? 'selected' : '' %>>Mark as Delivered</option>
+                            <option value="Cancelled" <%= order.status === 'Cancelled' ? 'selected' : '' %>>Cancel</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                    </form>
+                </div>
+            </div>
+        <% }); %>
+    <% } else { %>
+        <p class="text-center">You have no incoming orders.</p>
+    <% } %>
+</div>
+<%- include('partials/footer') %>

@@ -1,0 +1,44 @@
+<%- include('partials/header') %>
+<nav class="navbar navbar-expand-lg bg-body-tertiary mb-4">
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="/marketplace">Marketplace</a></li>
+        <li class="nav-item"><a class="nav-link active" href="/community">My Community</a></li>
+        <li class="nav-item"><a class="nav-link" href="/cart">My Cart</a></li>
+        <li class="nav-item"><a class="nav-link" href="/orders/history">Order History</a></li>
+    </ul>
+    </nav>
+
+<div class="container">
+    <h2>My Community: <%= user.locality %></h2>
+    <p>Here are the other members of the supply chain in your local area.</p>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h4><span class="badge bg-success"><%= suppliers.length %></span> Suppliers</h4>
+            <ul class="list-group">
+                <% if(suppliers.length > 0) { %>
+                    <% suppliers.forEach(supplier => { %>
+                        <li class="list-group-item"><%= supplier.email %></li>
+                    <% }); %>
+                <% } else { %>
+                    <li class="list-group-item">No other suppliers in your area yet.</li>
+                <% } %>
+            </ul>
+        </div>
+
+        <div class="col-md-6">
+            <h4><span class="badge bg-primary"><%= vendors.length %></span> Vendors</h4>
+            <ul class="list-group">
+                 <% if(vendors.length > 0) { %>
+                    <% vendors.forEach(vendor => { %>
+                        <li class="list-group-item"><%= vendor.email %></li>
+                    <% }); %>
+                <% } else { %>
+                    <li class="list-group-item">No other vendors in your area yet.</li>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

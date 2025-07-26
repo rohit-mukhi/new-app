@@ -1,0 +1,46 @@
+<%- include('partials/header') %>
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Marketplace</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+    <li class="nav-item"><a class="nav-link" href="/community">My Community</a></li>
+    <li class="nav-item"><a class="nav-link" href="/cart">My Cart</a></li>
+    <li class="nav-item"><a class="nav-link" href="/orders/history">Order History</a></li>
+</ul>
+      <span class="navbar-text me-3">Welcome, <%= user.email %></span>
+      <a href="/profile" class="btn btn-outline-info me-2">Profile</a> 
+      <a href="/logout" class="btn btn-outline-danger">Logout</a>
+    </div>
+  </div>
+</nav>
+<%- include('partials/messages') %>
+
+<h2>Available Produce in Your Community</h2>
+
+<div class="row">
+    <% if(products.length > 0) { %>
+        <% products.forEach(product => { %>
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><%= product.name %></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">₹<%= product.price %> / <%= product.unit %></h6>
+                        <p class="card-text"><%= product.description %></p>
+                        <p class="card-text"><small class="text-muted">Supplier: <%= product.supplier.email %></small></p>
+                        <p class="card-text"><small class="text-muted">Tracking ID: <%= product.uniqueCode %></small></p>
+                        <form action="/cart/add/<%= product._id %>" method="POST" class="d-grid">
+                            <button type="submit" class="btn btn-success">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+    <% } else { %>
+        <p class="text-center">No produce is currently listed by suppliers in your locality. Check back soon!</p>
+    <% } %>
+</div>
+
+
+<%- include('partials/footer') %>
