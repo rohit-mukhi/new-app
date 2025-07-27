@@ -1,5 +1,4 @@
 <%- include('partials/header') %>
-
 <nav class="navbar navbar-expand-lg bg-body-tertiary mb-4">
     <div class="container-fluid">
         <a class="navbar-brand" href="/marketplace">Marketplace</a>
@@ -8,9 +7,9 @@
                 <li class="nav-item"><a class="nav-link" href="/community">My Community</a></li>
                 <li class="nav-item"><a class="nav-link" href="/cart">My Cart</a></li>
                 <li class="nav-item"><a class="nav-link active" href="/orders/history">Order History</a></li>
+                <li class="nav-item"><a class="nav-link" href="/grievances/my-complaints">My Complaints</a></li>
             </ul>
-            
-             <span class="navbar-text me-3">Welcome, <%= user.email %></span>
+            <span class="navbar-text me-3">Welcome, <%= user.email %></span>
             <a href="/profile" class="btn btn-outline-info me-2">Profile</a>
             <a href="/logout" class="btn btn-outline-danger">Logout</a>
         </div>
@@ -28,24 +27,40 @@
                     <span><strong>Order ID:</strong> <%= order._id %></span>
                     <span><strong>Date:</strong> <%= new Date(order.orderDate).toLocaleDateString() %></span>
                 </div>
-                
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
                         <% order.products.forEach(item => { %>
-                            <li class="list-group-item"><%= item.quantity %> x <%= item.product.name %> (@ ₹<%= item.product.price.toFixed(2) %> each)</li>
+                            <li class="list-group-item"><%= item.quantity %> x <%= item.product.name %></li>
                         <% }); %>
                     </ul>
                 </div>
                 <div class="card-footer d-flex justify-content-between align-items-center">
-                    <span><strong>Status:</strong> <span class="badge bg-warning text-dark"><%= order.status %></span></span>
-                    <div>
+                    <span><strong>Status:</strong> <span class="badge bg-success"><%= order.status %></span></span>
+                    <div class="d-flex align-items-center gap-2">
                         <% if (order.status === 'Delivered') { %>
                             <a href="/grievances/file/<%= order._id %>" class="btn btn-danger btn-sm">File a Complaint</a>
+                        <% } %>
+
+                        <% if (order.status === 'Delivered' && !order.ratingGiven) { %>
+                            <form action="/orders/rate/<%= order._id %>" method="POST" class="d-inline-block">
+                                <input type="hidden" name="supplierId" value="<%= order.products[0].supplier %>">
+                                <div class="input-group input-group-sm">
+                                    <select name="rating" class="form-select" required>
+                                        <option value="">Rate Supplier</option>
+                                        <option value="5">★★★★★</option>
+                                        <option value="4">★★★★☆</option>
+                                        <option value="3">★★★☆☆</option>
+                                        <option value="2">★★☆☆☆</option>
+                                        <option value="1">★☆☆☆☆</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-warning">Submit</button>
+                                </div>
+                            </form>
                         <% } %>
                         <span><strong>Total: ₹<%= order.totalPrice.toFixed(2) %></strong></span>
                     </div>
                 </div>
-                </div>
+            </div>
         <% }); %>
     <% } else { %>
         <p class="text-center">You have no past orders.</p>

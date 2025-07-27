@@ -11,43 +11,44 @@
     <h2>Manage Grievances</h2>
     <%- include('partials/messages') %>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Order ID</th>
-                <th>Vendor</th>
-                <th>Supplier</th>
-                <th>Reason</th>
-                <th>Filed On</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% grievances.forEach(g => { %>
+    <% if(grievances && grievances.length > 0) { %>
+        <table class="table table-striped align-middle">
+            <thead>
                 <tr>
-                    <td><%= g.order._id %></td>
-                    <td><%= g.vendor.email %></td>
-                    <td><%= g.supplier.email %></td>
-                    <td><%= g.reason %></td>
-                    <td><%= new Date(g.createdAt).toLocaleDateString() %></td>
-                    <td><%= g.status %></td>
-                    <td>
-                        <form action="/admin/grievances/update/<%= g._id %>" method="POST">
-                            <div class="input-group">
-                                <select name="status" class="form-select form-select-sm">
-                                    <option value="Pending Review" <%= g.status === 'Pending Review' ? 'selected' : '' %>>Pending</option>
-                                    <option value="Under Investigation" <%= g.status === 'Under Investigation' ? 'selected' : '' %>>Investigating</option>
-                                    <option value="Resolved" <%= g.status === 'Resolved' ? 'selected' : '' %>>Resolved</option>
-                                </select>
-                                <button class="btn btn-sm btn-primary" type="submit">Update</button>
-                            </div>
-                        </form>
-                    </td>
+                    <th>Order ID</th>
+                    <th>Vendor</th>
+                    <th>Supplier</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Action</th>
                 </tr>
-            <% }); %>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <% grievances.forEach(g => { %>
+                    <tr>
+                        <td><%= g.order ? g.order._id : 'N/A' %></td>
+                        <td><%= g.vendor ? g.vendor.email : 'Deleted User' %></td>
+                        <td><%= g.supplier ? g.supplier.email : 'Deleted User' %></td>
+                        <td><%= g.reason %></td>
+                        <td><%= g.status %></td>
+                        <td>
+                            <form action="/admin/grievances/update/<%= g._id %>" method="POST">
+                                <div class="input-group">
+                                    <select name="status" class="form-select form-select-sm">
+                                        <option value="Pending Review" <%= g.status === 'Pending Review' ? 'selected' : '' %>>Pending</option>
+                                        <option value="Under Investigation" <%= g.status === 'Under Investigation' ? 'selected' : '' %>>Investigating</option>
+                                        <option value="Resolved" <%= g.status === 'Resolved' ? 'selected' : '' %>>Resolved</option>
+                                    </select>
+                                    <button class="btn btn-sm btn-primary" type="submit">Update</button>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <p class="text-center">No grievances have been filed yet.</p>
+    <% } %>
 </div>
-
 <%- include('partials/footer') %>

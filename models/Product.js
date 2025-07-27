@@ -29,9 +29,23 @@ const ProductSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true
+  }, image: {
+    type: String,
+    required: 'Please upload an image.',
+  },
+  cloudinaryId: {
+    type: String,
+    required: true,
+  },
+   stock: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  unitsSold: {
+    type: Number,
+    default: 0
   }
-}, {
-  timestamps: true // Adds createdAt and updatedAt timestamps
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model('Product', ProductSchema);

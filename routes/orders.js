@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const Order = require('../models/Order');
+const Product = require('../models/Product');
 const { ensureAuth, ensureVendor, ensureSupplier } = require('../middleware/auth');
 
 
@@ -45,6 +46,20 @@ router.post('/checkout', ensureVendor, async (req, res) => {
             products: productsForOrder,
             totalPrice
         });
+
+         for (const item of user.cart) {
+        if (item.product) {
+            await Product.updateOne(
+                { _id: item.product._id },
+                { 
+                    $inc: { 
+                        stock: -item.quantity, // Decrease stock
+                        unitsSold: +item.quantity // Increase units sold
+                    } 
+                }
+            );
+        }
+    }
 
         // Clear the user's cart after a successful order
         user.cart = [];
@@ -119,7 +134,37 @@ router.post('/update-status/:id', ensureSupplier, async (req, res) => {
     }
 });
 
-module.exports = router;
+// routes/orders.js
+
+// @desc    Submit a rating for a supplier on a completed order
+// @route   POST /orders/rate/:orderId
+router.post('/rate/:orderId', ensureVendor, async (req, res) => {
+    try {
+        const { rating, supplierId } = req.body;
+        const orderId = req.params.orderId;
+
+        // Mark the order as rated to prevent multiple ratings
+        await Order.findByIdAndUpdate(orderId, { ratingGiven: true });
+
+        // Update the supplier's rating
+        const supplier = await User.findById(supplierId);
+        const newTotalRatings = supplier.totalRatings + 1;
+        const newAverageRating = ((supplier.averageRating * supplier.totalRatings) + parseInt(rating)) / newTotalRatings;
+
+        supplier.totalRatings = newTotalRatings;
+        supplier.averageRating = newAverageRating;
+        await supplier.save();
+
+        req.flash('success_msg', 'Thank you for your rating!');
+        res.redirect('/orders/history');
+    } catch (err) {
+        console.error(err);
+        req.flash('error_msg', 'Failed to submit rating.');
+        res.redirect('/orders/history');
+    }
+});
+
+
 
 
 module.exports = router;

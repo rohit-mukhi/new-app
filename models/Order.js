@@ -24,6 +24,10 @@ const OrderSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  ratingGiven: {
+    type: Boolean,
+    default: false
+  }
 });
 
 module.exports = mongoose.model('Order', OrderSchema);

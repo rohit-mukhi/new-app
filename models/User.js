@@ -22,8 +22,17 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  // Simple cart for vendors
-  cart: [CartItemSchema]
+  cart: [CartItemSchema],
+
+  // ## ADD THESE FIELDS FOR THE RATING SYSTEM ##
+  averageRating: {
+    type: Number,
+    default: 0
+  },
+  totalRatings: {
+    type: Number,
+    default: 0
+  }
 });
 
 UserSchema.plugin(passportLocalMongoose, { usernameField: 'email' });

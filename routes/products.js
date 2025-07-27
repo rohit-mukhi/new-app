@@ -3,6 +3,7 @@ const router = express.Router();
 const crypto = require('crypto'); // To generate unique codes
 const Product = require('../models/Product');
 const User = require('../models/User');
+const upload = require('../middleware/multer');
 
 // Import our new role-checking middleware
 const { ensureAuth, ensureSupplier, ensureVendor } = require('../middleware/auth');
@@ -15,46 +16,72 @@ router.get('/products/new', ensureSupplier, (req, res) => {
 
 // @desc    Process the form to list a new item
 // @route   POST /products
-router.post('/products', ensureSupplier, async (req, res) => {
-  try {
-    const { name, description, price, unit } = req.body;
-    
-    // Generate a unique code for tracking
-    const uniqueCode = crypto.randomBytes(4).toString('hex').toUpperCase();
+// routes/products.js
 
-    await Product.create({
-      name,
-      description,
-      price,
-      unit,
-      supplier: req.user.id,
-      uniqueCode: `${req.user.locality.slice(0,3).toUpperCase()}-${uniqueCode}`
-    });
+router.post('/', ensureSupplier, upload.single('image'), async (req, res) => {
+    try {
+        if (!req.file) {
+            req.flash('error_msg', 'Please upload an image.');
+            return res.redirect('/products/new');
+        }
 
-    res.redirect('/dashboard');
-  } catch (err) {
-    console.error(err);
-    // You can render an error page here
-    res.send('Error creating product');
-  }
+        // This is the new logic to generate a unique code
+        const uniqueCode = crypto.randomBytes(4).toString('hex').toUpperCase();
+
+        await Product.create({
+            name: req.body.name,
+            description: req.body.description,
+            price: req.body.price,
+            unit: req.body.unit,
+            supplier: req.user.id,
+            image: req.file.path,
+            cloudinaryId: req.file.filename,
+            // Add the generated uniqueCode to the new product
+            uniqueCode: `${req.user.locality.slice(0, 3).toUpperCase()}-${uniqueCode}`
+        });
+
+        res.redirect('/dashboard');
+    } catch (err) {
+        console.error("PRODUCT CREATE ERROR:", err);
+        res.send("An error occurred. Check server logs.");
+    }
 });
 
-// @desc    Show marketplace to vendors with local products
+// @desc    Show marketplace to vendors with local products, search, and sort
 // @route   GET /marketplace
 router.get('/marketplace', ensureVendor, async (req, res) => {
     try {
-        // Find products and populate the supplier's details
-        // Then, filter these products to match the vendor's locality
-        const products = await Product.find()
-            .populate('supplier') // This fetches the full User document for the supplier
-            .sort({ createdAt: 'desc' })
-            .lean(); // .lean() makes queries faster, returns plain JS objects
+        const { search, sort } = req.query; // Get search and sort parameters from URL
+        let query = {}; // The base query to find products
 
+        // Build the search query if a search term is provided
+        if (search) {
+            query.name = new RegExp(search, 'i'); // 'i' makes it case-insensitive
+        }
+
+        // Determine the sort order
+        let sortOrder = {};
+        if (sort === 'price-asc') {
+            sortOrder.price = 1; // 1 for ascending
+        } else if (sort === 'price-desc') {
+            sortOrder.price = -1; // -1 for descending
+        } else {
+            sortOrder.createdAt = -1; // Default sort by newest
+        }
+
+        const products = await Product.find(query)
+            .populate('supplier')
+            .sort(sortOrder)
+            .lean();
+
+        // Filter products by the vendor's locality after fetching
         const localProducts = products.filter(p => p.supplier && p.supplier.locality === req.user.locality);
 
         res.render('marketplace', {
             user: req.user,
-            products: localProducts
+            products: localProducts,
+            search: search || '', // Pass search term back to the view
+            sort: sort || '' // Pass sort option back to the view
         });
     } catch (err) {
         console.error(err);

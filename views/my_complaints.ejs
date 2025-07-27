@@ -1,0 +1,68 @@
+<%- include('partials/header') %>
+<nav class="navbar navbar-expand-lg bg-body-tertiary mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/marketplace">Marketplace</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="/community">My Community</a></li>
+                <li class="nav-item"><a class="nav-link" href="/cart">My Cart</a></li>
+                <li class="nav-item"><a class="nav-link" href="/orders/history">Order History</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/grievances/my-complaints">My Complaints</a></li>
+            </ul>
+            <span class="navbar-text me-3">Welcome, <%= user.email %></span>
+            <a href="/profile" class="btn btn-outline-info me-2">Profile</a>
+            <a href="/logout" class="btn btn-outline-danger">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h2>My Filed Complaints</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Supplier</th>
+                <th>Reason for Complaint</th>
+                <th>Date Filed</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if(complaints && complaints.length > 0) { %>
+                <% complaints.forEach(complaint => { %>
+                    <tr>
+                        <td><%= complaint.order ? complaint.order._id : 'N/A' %></td>
+                        <td><%= complaint.supplier ? complaint.supplier.email : 'N/A' %></td>
+                        <td>
+                            <%= complaint.reason %>
+                            
+                            <% if (complaint.supplierNote) { %>
+                                <br>
+                                <small class="text-muted">
+                                    <strong>Supplier's Note:</strong> "<%= complaint.supplierNote %>"
+                                </small>
+                            <% } %>
+                        </td>
+                        <td><%= new Date(complaint.createdAt).toLocaleDateString() %></td>
+                        <td>
+                            <% if (complaint.status === 'Resolved') { %>
+                                <span class="badge bg-success"><%= complaint.status %></span>
+                            <% } else if (complaint.status === 'Under Investigation') { %>
+                                <span class="badge bg-warning text-dark"><%= complaint.status %></span>
+                            <% } else { %>
+                                <span class="badge bg-secondary"><%= complaint.status %></span>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }); %>
+            <% } else { %>
+                <tr>
+                    <td colspan="5" class="text-center">You have not filed any complaints.</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+<%- include('partials/footer') %>

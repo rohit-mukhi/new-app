@@ -1,5 +1,18 @@
 <%- include('partials/header') %>
 <nav class="navbar navbar-expand-lg bg-body-tertiary mb-4">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/dashboard">Supplier Dashboard</a>
+        <div class="collapse navbar-collapse">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+    <li class="nav-item"><a class="nav-link" href="/products/new">List New Item</a></li>
+    <li class="nav-item"><a class="nav-link" href="/orders/manage">Manage Orders</a></li>
+    <li class="nav-item"><a class="nav-link" href="/grievances/view">View Complaints</a></li>
+</ul>
+            <span class="navbar-text me-3">Welcome, <%= user.email %></span>
+      <a href="/profile" class="btn btn-outline-info me-2">Profile</a>
+      <a href="/logout" class="btn btn-outline-danger">Logout</a>
+        </div>
+    </div>
     </nav>
 
 <div class="container">
@@ -29,6 +42,10 @@
                 </select>
             </div>
         </div>
+        <div class="col-md-4 mb-3">
+        <label for="stock" class="form-label">Quantity in Stock</label>
+        <input type="number" class="form-control" id="stock" name="stock" required>
+    </div>
         <button type="submit" class="btn btn-primary">Save Changes</button>
         <a href="/dashboard" class="btn btn-secondary">Cancel</a>
     </form>

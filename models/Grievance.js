@@ -26,6 +26,12 @@ const GrievanceSchema = new mongoose.Schema({
     default: 'Pending Review',
     enum: ['Pending Review', 'Under Investigation', 'Resolved'],
   },
+   supplierNote: {
+    type: String,
+    trim: true,
+    default: ''
+  }
 }, { timestamps: true });
+
 
 module.exports = mongoose.model('Grievance', GrievanceSchema);

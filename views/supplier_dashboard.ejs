@@ -1,5 +1,18 @@
 <%- include('partials/header') %>
 <nav class="navbar navbar-expand-lg bg-body-tertiary mb-4">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/dashboard">Supplier Dashboard</a>
+        <div class="collapse navbar-collapse">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+    <li class="nav-item"><a class="nav-link" href="/products/new">List New Item</a></li>
+    <li class="nav-item"><a class="nav-link" href="/orders/manage">Manage Orders</a></li>
+    <li class="nav-item"><a class="nav-link" href="/grievances/view">View Complaints</a></li>
+</ul>
+            <span class="navbar-text me-3">Welcome, <%= user.email %></span>
+      <a href="/profile" class="btn btn-outline-info me-2">Profile</a>
+      <a href="/logout" class="btn btn-outline-danger">Logout</a>
+        </div>
+    </div>
     </nav>
 
 <div class="container">
@@ -38,25 +51,26 @@
 
     <h4>Your Active Listings</h4>
     <table class="table table-striped align-middle">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Stock</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% if(products && products.length > 0) { %>
             <% products.forEach(product => { %>
                 <tr>
+                    <td>
+                        <img src="<%= product.image %>" alt="<%= product.name %>" width="60" height="60" style="object-fit: cover;">
+                    </td>
                     <td><%= product.name %></td>
                     <td>₹<%= product.price %> / <%= product.unit %></td>
                     <td>
-                        <% if (product.stock <= 5) { %>
-                            <span class="badge bg-danger"><%= product.stock %> (Low)</span>
-                        <% } else { %>
-                            <span class="badge bg-success"><%= product.stock %></span>
-                        <% } %>
+                        <span class="badge bg-success"><%= product.stock %></span>
                     </td>
                     <td>
                         <a href="/products/edit/<%= product._id %>" class="btn btn-warning btn-sm">Edit</a>
@@ -66,8 +80,13 @@
                     </td>
                 </tr>
             <% }); %>
-        </tbody>
-    </table>
+        <% } else { %>
+            <tr>
+                <td colspan="5" class="text-center">You have not listed any products yet.</td>
+            </tr>
+        <% } %>
+    </tbody>
+</table>
 </div>
 
 <%- include('partials/footer') %>

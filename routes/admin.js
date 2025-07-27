@@ -24,6 +24,7 @@ router.get('/dashboard', ensureAdmin, async (req, res) => {
 // @route   POST /admin/grievances/update/:id
 router.post('/grievances/update/:id', ensureAdmin, async (req, res) => {
     try {
+        // req.body.status gets the new status from the dropdown menu
         await Grievance.findByIdAndUpdate(req.params.id, { status: req.body.status });
         req.flash('success_msg', 'Grievance status updated.');
         res.redirect('/admin/dashboard');

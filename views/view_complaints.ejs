@@ -1,0 +1,63 @@
+<%- include('partials/header') %>
+<nav class="navbar navbar-expand-lg bg-body-tertiary mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/dashboard">Supplier Dashboard</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="/products/new">List New Item</a></li>
+                <li class="nav-item"><a class="nav-link" href="/orders/manage">Manage Orders</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/grievances/view">View Complaints</a></li>
+            </ul>
+            <span class="navbar-text me-3">Welcome, <%= user.email %></span>
+            <a href="/profile" class="btn btn-outline-info me-2">Profile</a>
+            <a href="/logout" class="btn btn-outline-danger">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h2>Complaints Against You</h2>
+    <%- include('partials/messages') %>
+
+    <% if(complaints && complaints.length > 0) { %>
+        <% complaints.forEach(complaint => { %>
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between">
+                    <span>
+                        <strong>Vendor:</strong> <%= complaint.vendor ? complaint.vendor.email : 'N/A' %>
+                        (<small>Order: <%= complaint.order ? complaint.order._id : 'N/A' %></small>)
+                    </span>
+                    <span>
+                        <strong>Status:</strong>
+                        <% if (complaint.status === 'Resolved') { %>
+                            <span class="badge bg-success"><%= complaint.status %></span>
+                        <% } else if (complaint.status === 'Under Investigation') { %>
+                            <span class="badge bg-warning text-dark"><%= complaint.status %></span>
+                        <% } else { %>
+                            <span class="badge bg-secondary"><%= complaint.status %></span>
+                        <% } %>
+                    </span>
+                </div>
+                <div class="card-body">
+                    <p class="card-text"><strong>Reason Filed:</strong> <%= complaint.reason %></p>
+                    
+                    <% if (complaint.supplierNote) { %>
+                        <p class="mt-3"><strong>Your Note:</strong> <em class="text-muted">"<%= complaint.supplierNote %>"</em></p>
+                    <% } %>
+                </div>
+                <div class="card-footer">
+                    <form action="/grievances/add-note/<%= complaint._id %>" method="POST">
+                        <div class="input-group">
+                            <input type="text" name="supplierNote" class="form-control" placeholder="Add a resolution note..." value="<%= complaint.supplierNote || '' %>">
+                            <button class="btn btn-outline-primary" type="submit">Save Note</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        <% }); %>
+    <% } else { %>
+        <p class="text-center">No complaints have been filed against you.</p>
+    <% } %>
+</div>
+
+<%- include('partials/footer') %>

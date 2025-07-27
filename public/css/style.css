@@ -1,19 +1,243 @@
-/* public/css/style.css */
+/* ---
+  Community Supply Chain - Custom Stylesheet
+  Theme: Classic Navy & Gold (Responsive)
+  Author: Gemini
+  Date: 27 July 2025
+--- */
+
+/* --- Google Font Import --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* --- CSS Variables for Theming --- */
+:root {
+  /* Core Palette */
+  --primary-navy: #0A2342;    /* A deep, professional navy */
+  --accent-gold: #FFC107;     /* A vibrant, warm gold/yellow */
+  --accent-gold-hover: #ffb600;
+  --bg-light: #F8F9FA;        /* A clean, light grey background */
+  --bg-white: #FFFFFF;
+  
+  /* Text & Borders */
+  --text-dark: #212529;
+  --text-muted: #6c757d;
+  --border-color: #dee2e6;
+
+  /* General */
+  --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+  --card-border-radius: 10px;
+  --font-family: 'Poppins', sans-serif;
+}
+
+/* --- Base & Typography (Responsive) --- */
+html {
+  /* Set base font size for rem unit scaling */
+  font-size: 16px;
+}
 
 body {
-    background-color: #f8f9fa; /* A light grey background */
+  font-family: var(--font-family);
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  line-height: 1.6;
 }
 
-.card {
-    /* Adding a subtle shadow to make cards pop */
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    transition: 0.3s;
+/* Fluid Typography: smoothly scales headings with viewport size */
+h1, .h1 { font-size: clamp(2.00rem, 1.62rem + 1.92vw, 3.00rem); }
+h2, .h2 { font-size: clamp(1.75rem, 1.48rem + 1.33vw, 2.50rem); }
+h3, .h3 { font-size: clamp(1.50rem, 1.30rem + 1.00vw, 2.00rem); }
+h4, .h4 { font-size: clamp(1.25rem, 1.15rem + 0.50vw, 1.50rem); }
+
+a {
+  color: var(--primary-navy);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+a:hover {
+  color: #000;
 }
 
-.card:hover {
-     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-}
-
+/* --- Navigation Bar --- */
 .navbar {
-    margin-bottom: 2rem !important;
+  background-color: var(--bg-white) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid var(--border-color);
+}
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--primary-navy) !important;
+}
+.navbar .nav-link.active {
+  color: var(--primary-navy) !important;
+  font-weight: 600;
+}
+
+/* --- Buttons & Forms --- */
+.btn {
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 0.6rem 1.5rem;
+  transition: all 0.3s ease;
+}
+.btn-primary {
+  background-color: var(--primary-navy);
+  border-color: var(--primary-navy);
+  color: var(--bg-white);
+}
+.btn-primary:hover {
+  background-color: #000;
+  border-color: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.btn-warning {
+  background-color: var(--accent-gold);
+  border-color: var(--accent-gold);
+  color: var(--text-dark);
+}
+.btn-warning:hover {
+  background-color: var(--accent-gold-hover);
+  border-color: var(--accent-gold-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.form-control, .form-select {
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-navy);
+  box-shadow: 0 0 0 0.25rem rgba(10, 35, 66, 0.2);
+}
+
+/* --- Card Styles --- */
+.card {
+  background-color: var(--bg-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-border-radius);
+  box-shadow: var(--card-shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+.card-header, .card-footer {
+  background-color: transparent;
+  border-color: #e9ecef;
+}
+
+/* --- Table Styles --- */
+.table thead {
+  background-color: var(--primary-navy);
+  color: var(--bg-white);
+}
+.table thead th {
+  font-weight: 600;
+}
+
+/* --- Footer --- */
+.site-footer {
+  background-color: var(--primary-navy);
+  color: #adb5bd;
+  padding: 3rem 0;
+  margin-top: 5rem;
+}
+.site-footer .copyright-text {
+  margin: 0;
+}
+.site-footer a {
+  color: var(--bg-white);
+  font-weight: 500;
+}
+.site-footer a:hover {
+  color: var(--accent-gold);
+}
+
+
+/*
+============================================
+Advanced Responsive Styles
+============================================
+*/
+
+/* 1. Responsive Table Wrapper */
+.table-responsive-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-border-radius);
+  margin-bottom: 1rem;
+}
+
+/* 2. Tablet and Smaller Devices (up to 992px) */
+@media (max-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+}
+
+/* 3. Small Tablets and Large Phones (up to 768px) */
+@media (max-width: 768px) {
+  /* Reduce padding on main containers to save space */
+  body > .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  /* Make forms with multiple columns stack nicely */
+  .form-row-responsive {
+    flex-direction: column;
+  }
+  .form-row-responsive > .col-md-6 {
+    width: 100% !important;
+  }
+  .form-row-responsive > div:not(:last-child) {
+    margin-bottom: 1rem;
+  }
+  
+  /* Improve mobile navigation experience */
+  .navbar-collapse {
+    padding: 1rem;
+    background-color: var(--bg-white);
+    border-radius: var(--card-border-radius);
+    margin-top: 0.5rem;
+    box-shadow: var(--card-shadow);
+  }
+}
+
+/* 4. Mobile Phones (up to 576px) */
+@media (max-width: 576px) {
+  /* Scale down base font size, all rem units will scale accordingly */
+  html {
+    font-size: 15px;
+  }
+
+  /* Make buttons in forms take full width for easier tapping */
+  form .btn {
+    width: 100%;
+  }
+
+  /* Reduce card padding on very small screens */
+  .card-body {
+    padding: 1rem;
+  }
+
+  .login-container, .register-container {
+    padding: 1.5rem;
+  }
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Make body at least the height of the screen */
+}
+
+.main-content {
+  flex: 1; /* Allows this element to grow and push the footer down */
 }
